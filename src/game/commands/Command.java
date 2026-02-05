@@ -1,0 +1,47 @@
+package game.commands;
+
+/**
+ * Represents a parsed player command.
+ * Stores command data 
+ */
+public final class Command {
+
+	/**
+	 * Action word being used
+	 */
+	private final String verb;
+	
+	/**
+	 * Target word being used. 
+	 */
+	private final String noun;
+	
+	/**
+	 * Creates command with verb and noun.
+	 * 
+	 * @param verb the command action 
+	 * @param noun the command target
+	 */
+	public Command(String verb, String noun) {
+		this.verb = verb;
+		this.noun = noun;
+	}
+	
+	/**
+	 * Returns the command verb.
+	 * 
+	 * @return the verb.
+	 */
+	public String getverb() {
+		return verb;
+	}
+	
+	/**
+	 * Returns the command noun.
+	 * 
+	 * @return the noun.
+	 */
+	public String getNoun() {
+		return noun;
+	}
+}
