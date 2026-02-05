@@ -5,8 +5,9 @@ package game.core;
  */
 public abstract class GameObject {
 
-	//Declare variables 
+	//Store object's name
 	protected String name;
+	//What the player sees when examining the object.
 	protected String description;
 	
 	/**
