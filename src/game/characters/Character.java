@@ -9,7 +9,7 @@ public abstract class Character extends GameObject{
 	
 	//Current amount of health character has right now.
 	protected int health;
-	//Max amount of health the character can have.
+	//Maximum amount of health the character can have.
 	protected int maxHealth;
 	
 	/**
