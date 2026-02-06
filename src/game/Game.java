@@ -2,6 +2,9 @@ package game;
 
 import java.util.Scanner;
 
+import game.characters.Player;
+import game.commands.SimpleCommandParser;
+import game.util.GameLogger;
 import game.world.GameWorld;
 
 /**
@@ -35,12 +38,21 @@ public class Game {
 		//build all rooms.
 		world.buildWorld();
 		
+		//Initialize player.
+		Player player = new Player();
+		player.setName("Elite");
+		player.setHealth(100);
+		player.move(world.getStartingRoom());
+		
+		//Initialize logger.
+		GameLogger logger = GameLogger.getInstance();
+		logger.log(player.getName() + "enters the building");
+		
+		//Initialize command parser.
+		SimpleCommandParser parser = new SimpleCommandParser();
+		
 		//Scanner used to read player input from console.
 		Scanner scanner = new Scanner(System.in);
-		
-		//Displays the game title.
-		System.out.println("Escape the Building");
-		
 		//Main game input loop.
 		while (true) {
 			System.out.print("> ");
