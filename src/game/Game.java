@@ -2,6 +2,8 @@ package game;
 
 import java.util.Scanner;
 
+import game.world.GameWorld;
+
 /**
  * This class starts the program and handles the main input loop.
  */
@@ -15,7 +17,7 @@ public class Game {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		//Prints welcome message to console 
+		//Prints welcome message to console. 
 		System.out.println("===================================");
 		System.out.println("        ESCAPE THE BUILDING        ");
 		System.out.println("===================================");
@@ -26,6 +28,12 @@ public class Game {
 		System.out.println("Type 'help' to see available commands.");
 		System.out.println("Good luck... you will need it!");
 		System.out.println("===================================");
+		
+		//Initialize Game World.
+		//Singleton of Game world. 
+		GameWorld world = GameWorld.getInstance();
+		//build all rooms.
+		world.buildWorld();
 		
 		//Scanner used to read player input from console.
 		Scanner scanner = new Scanner(System.in);
