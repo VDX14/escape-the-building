@@ -7,9 +7,19 @@ import game.core.GameObject;
  */
 public abstract class Character extends GameObject{
 	
-	//Declare variables.
+	//Current amount of health character has right now.
 	protected int health;
+	//Max amount of health the character can have.
 	protected int maxHealth;
+	
+	/**
+	 * Sets the character current health at start of game when initializing character. 
+	 * 
+	 * @param health the amount of health to set.
+	 */
+	public void setHealth(int health) {
+		this.health = Math.min(health, maxHealth);
+	}
 	
 	/**
 	 * This reduces health by the given amount. 
