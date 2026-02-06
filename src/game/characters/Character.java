@@ -11,6 +11,8 @@ public abstract class Character extends GameObject{
 	protected int health;
 	//Maximum amount of health the character can have.
 	protected int maxHealth;
+	//Character name 
+	protected String name;
 	
 	/**
 	 * Sets the character current health at start of game when initializing character. 
@@ -21,6 +23,32 @@ public abstract class Character extends GameObject{
 		this.health = Math.min(health, maxHealth);
 	}
 	
+	/**
+	 * Returns current health of character
+	 * 
+	 * @return the current health
+	 */
+	public int getHealth( ) {
+		return health;
+	}
+	
+	/**
+	 * Set character's name.
+	 * 
+	 * @param name the name assign to the character.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	/**
+	 * Returns character's name.
+	 * 
+	 * @return the character's name.
+	 */
+	public String getName() {
+		return name;
+	}
 	/**
 	 * This reduces health by the given amount. 
 	 * 
