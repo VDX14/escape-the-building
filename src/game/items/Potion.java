@@ -12,6 +12,10 @@ public class Potion extends Item {
 	 */
 	//The amount of health restored when used. 
 	private int healAmount = 20;
+	//Give this item a name using the Item class. 
+	public Potion(String name) {
+		super("Healing Potion");
+	}
 	
 	/**
 	 * Use the potion and heals the player.
@@ -20,5 +24,6 @@ public class Potion extends Item {
 	 */
 	public void use(Player player) {
 		player.heal(healAmount);
+		System.out.println("You used" + getName() + "and healed" + healAmount + "health!");
 	}
 }

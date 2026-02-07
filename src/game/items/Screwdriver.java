@@ -7,13 +7,18 @@ import game.characters.Player;
  */
 public class Screwdriver extends Item {
 	
+	//Give this item a name using the Item class. 
+	public Screwdriver(String name) {
+		super("Phillips Screwdriver");
+	}
+	
 	/**
 	 * Uses the screwdriver 
 	 * 
 	 * @param player the player using the screwdriver
 	 */
 	public void use(Player player) {
-		//open something later 
+		System.out.println("You use" + getName() + "to open or loosen something.");
 	}
 
 }
