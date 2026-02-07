@@ -7,6 +7,26 @@ import game.core.GameObject;
  * Represents all the usable items in the game.
  */
 public abstract class Item extends GameObject {
+	//Declare name variable for items.
+	private String name;
+	
+	/**
+	 * Constructs a new item with the given name.
+	 * 
+	 * @param name the name of the item.
+	 */
+	public Item(String name) {
+		this.name = name;
+	}
+	
+	/**
+	 * Returns the name of the item.
+	 * 
+	 * @return the name of the item.
+	 */
+	public String getName() {
+		return name;
+	}
 
 	/**
 	 * Uses the item on the player. 
