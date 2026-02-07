@@ -32,7 +32,7 @@ public final class Command {
 	 * 
 	 * @return the verb.
 	 */
-	public String getverb() {
+	public String getVerb() {
 		return verb;
 	}
 	
