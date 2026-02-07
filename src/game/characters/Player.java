@@ -19,7 +19,16 @@ public class Player extends Character {
 	private Room currentRoom;
 	//The amount of power the player can have when attacking. 
 	private int attackPower;
-
+	
+	/**
+	 * Returns the player's inventory.
+	 * 
+	 * @return list of items the player is carrying.
+	 */
+	public List<Item> getInventory() {
+		return inventory;
+	}
+	
 	/**
 	 * Moves the player into a new room.
 	 * 
