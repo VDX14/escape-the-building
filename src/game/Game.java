@@ -22,6 +22,11 @@ public class Game {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
+		//Scanner declared outside of try so it can be accessed. 
+		Scanner scanner = null;
+		
+		try {
+		
 		//Prints welcome message to console. 
 		System.out.println("===================================");
 		System.out.println("        ESCAPE THE BUILDING        ");
@@ -48,14 +53,14 @@ public class Game {
 		
 		//Initialize logger.
 		GameLogger logger = GameLogger.getInstance();
-		logger.log(player.getName() + "enters the building");
+		logger.log(player.getName() + " enters the building");
 		
 		//Initialize command parser.
 		SimpleCommandParser parser = new SimpleCommandParser();
 		
 		//Main game input loop.
 		//Scanner used to read player input from console.
-		Scanner scanner = new Scanner(System.in);
+		scanner = new Scanner(System.in);
 		boolean playing = true;
 		
 		//Loop repeats as long as player is true.
@@ -117,15 +122,46 @@ public class Game {
 			}
 	
 			//Quit command, which ends the game loop.
-			else if (verb.equalsIgnoreCase("quit")); {
+			else if (verb.equalsIgnoreCase("quit")) {
 				
 				System.out.println("Thanks for playing!");
 				playing = false;
 			}
-					
+			
+			//Default command for unrecognizable commands.
+			else {
+				
+				System.out.println("Unknown command. Type 'help' for a list of commands.");
+			}
+			
+			//Check if the player's health has dropped to 0 or below. 
+			if (!player.isAlive()) {
+				System.out.println("You have died. Game over!");
+				//Log the death event 
+				logger.log(player.getName() + " has died.");
+				playing = false;
+			}
 		}
 		
-	}
+		//Log game session that it has ended.
+		logger.log("Game session ended.");
 	
-
+		
+	} catch (Exception e) {
+		
+		System.out.println("An unexpected error occured.");
+		System.out.println("The game will close now!");
+		
+		//Print error for developer debugging.
+		e.printStackTrace();
+	
+	}finally {
+		
+		if (scanner != null ) {
+			scanner.close();
+		}
+		
+		System.out.println("Game Closed.");
+	}
+}
 }
