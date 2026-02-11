@@ -65,4 +65,29 @@ public class Player extends Character {
 		item.use(this);
 		inventory.remove(item);
 	}
+	
+	public void attack(Enemy enemy) {
+		assert enemy != null : "Enemy can't be null";
+		enemy.takeDamage(attackPower);
+		System.out.println("You attack " + enemy.getName() + " for " + attackPower + " damage.");
+	}
+	
+	/**
+	 * Setter for attackPower.
+	 * 
+	 * @param power
+	 */
+	public void setAttackPower(int power) {
+		attackPower = power;
+	}
+	
+	/**
+	 * Getter for attackPower;
+	 * 
+	 * @return
+	 */
+	public int getAttackPower() {
+		return attackPower;
+	}
+	
 }
