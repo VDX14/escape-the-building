@@ -15,6 +15,14 @@ public abstract class Character extends GameObject{
 	protected String name;
 	
 	/**
+	 * Constructor to set default health.
+	 */
+	public Character() {
+		this.maxHealth = 100;
+		this.health = maxHealth;
+	}
+	
+	/**
 	 * Sets the character current health at start of game when initializing character. 
 	 * 
 	 * @param health the amount of health to set.
