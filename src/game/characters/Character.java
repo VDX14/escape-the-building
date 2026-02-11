@@ -8,11 +8,11 @@ import game.core.GameObject;
 public abstract class Character extends GameObject{
 	
 	//Current amount of health character has right now.
-	protected int health;
+	private int health;
 	//Maximum amount of health the character can have.
-	protected int maxHealth;
+	private int maxHealth;
 	//Character name 
-	protected String name;
+	private String name;
 	
 	/**
 	 * Constructor to set default health.
@@ -20,6 +20,19 @@ public abstract class Character extends GameObject{
 	public Character() {
 		this.maxHealth = 100;
 		this.health = maxHealth;
+	}
+	
+	/**
+	 * 
+	 * Constructor to set name and initial health.
+	 * 
+	 * @param name
+	 * @param health
+	 */
+	public Character(String name, int health ) {
+		this();
+		this.name = name;
+		setHealth(health);
 	}
 	
 	/**
@@ -38,6 +51,15 @@ public abstract class Character extends GameObject{
 	 */
 	public int getHealth( ) {
 		return health;
+	}
+	
+	/**
+	 * Returns the maximum health of character. 
+	 * 
+	 * @return
+	 */
+	public int getMaxHealth() {
+		return maxHealth;
 	}
 	
 	/**
@@ -83,4 +105,10 @@ public abstract class Character extends GameObject{
 	public boolean isAlive() {
 		return health > 0;
 	}
+	
+	//Override of toString().
+	 @Override
+	    public String toString() {
+	        return name + " (Health: " + health + "/" + maxHealth + ")";
+	    }
 }
