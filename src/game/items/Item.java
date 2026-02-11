@@ -27,6 +27,12 @@ public abstract class Item extends GameObject {
 	public String getName() {
 		return name;
 	}
+	
+	//Overridden method 
+	@Override
+	public String toString() {
+		return getName();
+	}
 
 	/**
 	 * Uses the item on the player. 
