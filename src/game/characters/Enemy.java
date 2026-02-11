@@ -1,6 +1,7 @@
 package game.characters;
 
 import game.items.Item;
+import game.items.Key;
 
 /**
  * Represents the Enemy character in the game. 
@@ -16,6 +17,18 @@ public class Enemy extends Character {
 	private String enemyType;
 	
 	/**
+	 * Constructor to set name, health and damage.
+	 * 
+	 * @param name
+	 * @param health
+	 * @param damage
+	 */
+	public Enemy(String name, int health, int damage) {
+		super(name, health);
+		this.damage = damage;
+	}
+	
+	/**
 	 * Attacks player and reduce its health.
 	 * 
 	 * @param player the player being attacked.
@@ -25,11 +38,20 @@ public class Enemy extends Character {
 	}
 	
 	/**
-	 * Returns the item from the enemy when defeated.
+	 * Returns the black key when enemy is defeated.
 	 * 
-	 * @return the dropped item or null if none.
+	 * @return 
 	 */
 	public Item dropItem() {
-		return null; //add later 
+		return new Key("Golden Key");
+	}
+	
+	/**
+	 * Getter for enemy damage.
+	 * 
+	 * @return
+	 */
+	public int getDamage() {
+		return damage;
 	}
 }
