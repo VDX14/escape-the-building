@@ -18,7 +18,16 @@ public class Screwdriver extends Item {
 	 * @param player the player using the screwdriver
 	 */
 	public void use(Player player) {
-		System.out.println("You use" + getName() + "to open or loosen something.");
+		assert player != null : "Player can't be null!";
+		System.out.println("You use " + getName() + " to open or loosen something.");
 	}
+	
+	/**
+	 * Overridden for inventory display.
+	 */
+	@Override
+    public String toString() {
+        return getName();
+    }
 
 }
