@@ -18,7 +18,15 @@ public class Torch extends Item {
 	 * @param player the player using the torch.
 	 */
 	public void use(Player player) {
-		System.out.println("You use" + getName() + "to light up the area.");
+		assert player != null : "Player can't be null!";
+		System.out.println("You use " + getName() + " to light up the area.");
 	}
-
+	
+	/**
+	 * Overridden for inventory display.
+	 */
+	 @Override
+	    public String toString() {
+	        return getName();
+	    }
 }
