@@ -7,16 +7,31 @@ import game.characters.Player;
  */
 public class Key extends Item {
 	
-	//Give this item a name using the Item class. 
+	/**
+	 * Constructor to set the key's name.
+	 * 
+	 * @param name
+	 */
 	public Key(String name) {
-		super("Black Key");
+		//uses passed-in name. 
+		super(name);
 	}
 
 	/**
-	 * Uses the key. 
-	 * Will implement it later 
+	 * Uses the key on player.
+	 * 
 	 */
+	@Override
 	public void use(Player player) {
-		System.out.println("You try to use" + getName() + "to unlock a door");
+		assert player != null : "Player can't be null!";
+		System.out.println("You try to use " + getName() + " to unlock a door");
+	}
+	
+	/**
+	 * overridden for inventory display
+	 */
+	@Override 
+	public String toString() {
+		return getName();
 	}
 }
