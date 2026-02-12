@@ -23,7 +23,16 @@ public class Potion extends Item {
 	 * @param player the player using the potion.
 	 */
 	public void use(Player player) {
+		assert player != null : "Player can't be null!";
 		player.heal(healAmount);
-		System.out.println("You used" + getName() + "and healed" + healAmount + "health!");
+		System.out.println("You used " + getName() + " and healed " + healAmount + " health!");
 	}
+	
+	/**
+	 * Overridden for inventory display.
+	 */
+	 @Override
+	    public String toString() {
+	        return getName();
+	    }
 }
