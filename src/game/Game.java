@@ -9,6 +9,7 @@ import game.items.Item;
 import game.util.GameLogger;
 import game.world.Direction;
 import game.world.GameWorld;
+import game.world.Room;
 
 /**
  * This class starts the program and handles the main input loop.
@@ -44,6 +45,7 @@ public class Game {
 			//Initialize Game World.
 			//Singleton of Game world. 
 			GameWorld world = GameWorld.getInstance();
+			
 			//build all rooms.
 			world.buildWorld();
 			
@@ -67,8 +69,10 @@ public class Game {
 			
 			//Loop repeats as long as player is true.
 			while (playing) {
+				
 				//Show prompt so player knows to type something.
 				System.out.print("> ");
+				
 				//Reads input from user and removes extra spaces.
 				String input = scanner.nextLine().trim();
 				
@@ -106,34 +110,70 @@ public class Game {
 				else if (verb.equalsIgnoreCase("inventory")) {
 					
 					if (player.getInventory().isEmpty()) {
+						
 				        // Inventory has no items
 				        System.out.println("Your inventory is empty.");
+				        
 				    } else {
+				    	
 				        // Inventory contains items
 				        System.out.println("You have:");
+				        
 				        for (Item item : player.getInventory()) {
 				            System.out.println("- " + item.getName());
 				        }
 				    }
 				}
 				
-				//Go command, which moves player (not fully implemented yet!)
+				//Go command, which moves player.
 				else if (verb.equalsIgnoreCase("go")) {
-					if (!command.hasNoun()) {
+
+				    if (!command.hasNoun()) {
 				        System.out.println("You need to specify a direction (north, south, east, west).");
 				        continue;
 				    }
-					
+
+				    try {
+				        Direction dir = parseDirection(noun);
+
+				        // Get player's current room
+				        Room currentRoom = player.getCurrentRoom();
+
+				        // Find exit matching the direction
+				        Room.Exit chosenExit = null;
+
+				        for (Room.Exit exit : currentRoom.getExits()) {
+				            if (exit.getDirection() == dir) {
+				                chosenExit = exit;
+				                break;
+				            }
+				        }
+
+				        // No exit in that direction
+				        if (chosenExit == null) {
+				            System.out.println("You can't go that way.");
+				            continue;
+				        }
+
+				        // Checks lock door.
+				        if (chosenExit.isLocked()) {
+				            System.out.println("The door is locked.");
+				            continue;
+				        }
+
+				        // Move player to next room
+				        player.move(chosenExit.getLeadsTo());
+
+				        // Show new room description
+				        System.out.println(player.getCurrentRoom().describe());
+
+				    } catch (IllegalArgumentException e) {
+				        System.out.println(e.getMessage());
+				   }
 				
-					 try {
-                         Direction dir = parseDirection(noun);
-                         System.out.println("You try to go " + dir + " (movement not fully implemented yet).");
-                     } catch (IllegalArgumentException e) {
-                         System.out.println(e.getMessage());
-                     }
-		
 				//Use command
 				 } else if (verb.equalsIgnoreCase("use")) {
+					 
 					 if (!command.hasNoun()) {
 					        System.out.println("You need to specify an item to use.");
 					        continue; 
@@ -149,9 +189,11 @@ public class Game {
                      }
 
                      if (foundItem != null) {
+                    	 
                          assert player != null : "Player can't be null!";
                          foundItem.use(player);
                          player.getInventory().remove(foundItem);
+                         
                      } else {
                          System.out.println("You don't have a " + noun + " in your inventory.");
                      }
@@ -172,6 +214,7 @@ public class Game {
 				//Check if the player's health has dropped to 0 or below. 
 				if (!player.isAlive()) {
 					System.out.println("You have died. Game over!");
+					
 					//Log the death event 
 					logger.log(player.getName() + " has died.");
 					playing = false;
