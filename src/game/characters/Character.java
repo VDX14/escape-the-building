@@ -85,7 +85,8 @@ public abstract class Character extends GameObject{
 	 * @param amount damage to take. 
 	 */
 	public void takeDamage(int amount) {
-		health = health - amount;
+		//health never goes negative.
+		health = Math.max(health - amount, 0);
 	}
 	
 	/**
