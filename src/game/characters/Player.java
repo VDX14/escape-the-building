@@ -15,8 +15,10 @@ public class Player extends Character {
 	 */
 	//List of items player is carrying.
 	private List<Item> inventory = new ArrayList<>();
+	
 	//Room player is in. 
 	private Room currentRoom;
+	
 	//The amount of power the player can have when attacking. 
 	private int attackPower;
 	
@@ -66,11 +68,47 @@ public class Player extends Character {
 		inventory.remove(item);
 	}
 	
+	/**
+	 * Uses a key to unlock a door in the current room.
+	 * Removes key from inventory if used successfully.
+	 *
+	 * @param keyName the name of the key to use
+	 * @return true if key was used successfully, false otherwise
+	 */
+	public boolean useKey(String keyName) {
+	    for (Item item : inventory) {
+	        if (item.getName().equalsIgnoreCase(keyName)) {
+	            if (currentRoom.unlockDoorWithKey(item)) {
+	                System.out.println("You used " + keyName + " to unlock the door!");
+	                inventory.remove(item);
+	                return true;
+	            } else {
+	                System.out.println(keyName + " doesn't work here.");
+	                return false;
+	            }
+	        }
+	    }
+	    System.out.println("You don't have " + keyName + " in your inventory.");
+	    return false;
+	}
+	
 	public void attack(Enemy enemy) {
 		assert enemy != null : "Enemy can't be null";
 		enemy.takeDamage(attackPower);
 		System.out.println("You attack " + enemy.getName() + " for " + attackPower + " damage.");
+	
+		// Pick up Golden Key if enemy is defeated
+	    if (!enemy.isAlive()) {
+	        Item goldenKey = enemy.dropItem();
+	        if (goldenKey != null) {
+	            pickUp(goldenKey);  // add to inventory
+	            System.out.println("The enemy dropped a Golden Key!");
+	        }
+	        // Remove enemy from room
+	        currentRoom.setEnemy(null);
 	}
+	
+  }
 	
 	/**
 	 * Setter for attackPower.
@@ -90,4 +128,19 @@ public class Player extends Character {
 		return attackPower;
 	}
 	
+	/**
+	 * Checks if player has an item by name in inventory.
+	 * 
+	 * @param itemName the name of the item.
+	 * @return true if player has the item, false otherwise.
+	 */
+	public boolean hasItem(String itemName) {
+        for (Item item : inventory) {
+            if (item.getName().equalsIgnoreCase(itemName)) {
+                return true;
+            }
+        }
+        return false;
+	}
+
 }
