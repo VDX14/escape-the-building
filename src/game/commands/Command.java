@@ -44,4 +44,14 @@ public final class Command {
 	public String getNoun() {
 		return noun;
 	}
+	
+	/**
+	 * Checks if the command has a noun.
+	 * 
+	 * @return true if noun is not null/empty.
+	 */
+	 public boolean hasNoun() {
+	    return noun != null && !noun.isEmpty();
+	    
+	 }
 }
