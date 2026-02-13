@@ -7,6 +7,7 @@ import game.commands.Command;
 import game.commands.SimpleCommandParser;
 import game.items.Item;
 import game.util.GameLogger;
+import game.world.Direction;
 import game.world.GameWorld;
 
 /**
@@ -61,7 +62,7 @@ public class Game {
 			//Initialize command parser.
 			SimpleCommandParser parser = new SimpleCommandParser();
 			
-			//Main game input loop.
+			//Main game loop.
 			boolean playing = true;
 			
 			//Loop repeats as long as player is true.
@@ -118,12 +119,45 @@ public class Game {
 				
 				//Go command, which moves player (not fully implemented yet!)
 				else if (verb.equalsIgnoreCase("go")) {
+					if (!command.hasNoun()) {
+				        System.out.println("You need to specify a direction (north, south, east, west).");
+				        continue;
+				    }
+					
 				
-					System.out.println("Using " + noun + " (usuage not fully implemented yet.)");
-				}
+					 try {
+                         Direction dir = parseDirection(noun);
+                         System.out.println("You try to go " + dir + " (movement not fully implemented yet).");
+                     } catch (IllegalArgumentException e) {
+                         System.out.println(e.getMessage());
+                     }
 		
+				//Use command
+				 } else if (verb.equalsIgnoreCase("use")) {
+					 if (!command.hasNoun()) {
+					        System.out.println("You need to specify an item to use.");
+					        continue; 
+					    }
+					 
+                     // Check if player has the item
+                     Item foundItem = null;
+                     for (Item item : player.getInventory()) {
+                         if (item.getName().equalsIgnoreCase(noun)) {
+                             foundItem = item;
+                             break;
+                         }
+                     }
+
+                     if (foundItem != null) {
+                         assert player != null : "Player can't be null!";
+                         foundItem.use(player);
+                         player.getInventory().remove(foundItem);
+                     } else {
+                         System.out.println("You don't have a " + noun + " in your inventory.");
+                     }
+                     
 				//Quit command, which ends the game loop.
-				else if (verb.equalsIgnoreCase("quit")) {
+				} else if (verb.equalsIgnoreCase("quit")) {
 					
 					System.out.println("Thanks for playing!");
 					playing = false;
@@ -157,6 +191,24 @@ public class Game {
 		}
 			
 		System.out.println("Game Closed.");
-		
 	}
+	
+	/**
+     * Converts a string input into a Direction enum.
+     * Throws exception if input is invalid.
+     *
+     * @param input direction string from player
+     * @return matching Direction enum
+     * @throws IllegalArgumentException if input is not a valid direction
+     */
+    private static Direction parseDirection(String input) {
+        assert input != null : "Input cannot be null!";
+
+        if (input.equalsIgnoreCase("north")) return Direction.NORTH;
+        if (input.equalsIgnoreCase("south")) return Direction.SOUTH;
+        if (input.equalsIgnoreCase("east")) return Direction.EAST;
+        if (input.equalsIgnoreCase("west")) return Direction.WEST;
+
+        throw new IllegalArgumentException("Invalid direction: " + input);
+    }
 }
