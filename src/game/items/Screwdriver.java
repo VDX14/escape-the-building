@@ -8,7 +8,7 @@ import game.characters.Player;
 public class Screwdriver extends Item {
 	
 	//Give this item a name using the Item class. 
-	public Screwdriver(String name) {
+	public Screwdriver() {
 		super("Phillips Screwdriver");
 	}
 	
@@ -21,13 +21,5 @@ public class Screwdriver extends Item {
 		assert player != null : "Player can't be null!";
 		System.out.println("You use " + getName() + " to open or loosen something.");
 	}
-	
-	/**
-	 * Overridden for inventory display.
-	 */
-	@Override
-    public String toString() {
-        return getName();
-    }
 
 }
