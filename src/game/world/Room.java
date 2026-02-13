@@ -20,7 +20,7 @@ public class Room {
 	private String roomDescription;
 	
 	//Tracks whether player has visited room before.
-	private boolean vistied;
+	private boolean visited;
 	
 	//If enemy is currently in room.
 	private Enemy enemy;
@@ -37,6 +37,7 @@ public class Room {
 	public Room(String name, String description) {
 		this.roomName = name;
 		this.roomDescription = description; 
+		this.visited = false;
 	}
 	
 	/**
@@ -70,32 +71,78 @@ public class Room {
 	}
 	
 	/**
+	 * Getter for exits.
+	 * 
+	 * @return
+	 */
+	public List<Exit> getExits() { 
+		return exits;
+	}
+	
+	/**
+	 * Getter for room names.
+	 * 
+	 * @return
+	 */
+	public String getRoomName() { 
+		return roomName;
+	}
+	
+	/**
+	 * Getter for items.
+	 * 
+	 * @return
+	 */
+	public List<Item> getItems() { 
+		return items;
+	}
+	
+	/**
+	 * Getters for enemy.
+	 * 
+	 * @return
+	 */
+	public Enemy getEnemy() { 
+		return enemy;
+	}
+	 
+	/**
 	 * Returns full description of the room.
 	 * 
 	 * @return the room description text.
 	 */
 	public String describe() {
-		 String description = roomDescription + "\nExits: ";
+		String description;
 
-	        // List all exits
-	        for (Exit exit : exits) {
-	            description += exit.direction + " ";
+	    // If the room has been visited before, show a shorter message
+	    if (visited) {
+	        description = "You are back in " + roomName + ".";
+	    } else {
+	        // First time visit, show full description
+	        description = roomDescription;
+	        visited = true; // mark as visited
+	    }
+
+	    // List exits
+	    description += "\nExits: ";
+	    for (Exit exit : exits) {
+	        description += exit.direction + " ";
+	    }
+
+	    // List items if any
+	    if (!items.isEmpty()) {
+	        description += "\nItems in room: ";
+	        for (Item item : items) {
+	            description += item.getName() + " ";
 	        }
+	    }
 
-	        // List all items if any
-	        if (!items.isEmpty()) {
-	            description += "\nItems in room: ";
-	            for (Item item : items) {
-	                description += item.getName() + " ";
-	            }
-	        }
+	    // Show enemy if there is one
+	    if (hasEnemy()) {
+	        description += "\nThere is an enemy here: " + enemy.getName();
+	    }
 
-	        // Show enemy if there is one
-	        if (hasEnemy()) {
-	            description += "\nThere is an enemy here: " + enemy.getName();
-	        }
-
-	        return description;
+	    return description;
 	}
 	
 	/**
@@ -116,18 +163,24 @@ public class Room {
 		//Whether the exit is locked or not.
 		private boolean locked;
 		
+		//Name of the key required to unlock this.exit
+		//Null means no key is required.
+		private String requiredKeyName;
+		
 		/**
 		 * Constructor
-		 * 
-		 * @param direction
-		 * @param leadsTo
-		 * @param locked
+		 *
+		 * @param direction direction of exit
+		 * @param leadsTo room this exit leads to
+		 * @param locked whether the exit starts locked
+		 * @param requiredKeyName name of key needed to unlock (null if none)
 		 */
-        public Exit(Direction direction, Room leadsTo, boolean locked) {
-            this.direction = direction;
-            this.leadsTo = leadsTo;
-            this.locked = locked;
-        }
+		public Exit(Direction direction, Room leadsTo, boolean locked, String requiredKeyName) {
+		    this.direction = direction;
+		    this.leadsTo = leadsTo;
+		    this.locked = locked;
+		    this.requiredKeyName = requiredKeyName;
+		}
 		
 		/**
 		 * Returns whether the exit is locked.
@@ -137,6 +190,57 @@ public class Room {
 		public boolean isLocked() {
 			return locked;
 		}
-	}
+		
+		/**
+		 * Method to unlock doors
+		 */
+		public void unlock() { 
+			this.locked = false;
+	    }
 
+		/**
+		 * Getter for room the exit leads to.
+		 * @return
+		 */
+	    public Room getLeadsTo() { 
+	    	return leadsTo;
+	    }
+
+	    /**
+	     * Getter for direction.
+	     * @return
+	     */
+	    public Direction getDirection() { 
+	    	return direction;
+	    }
+	    
+	    /**
+	     * Returns the name of the key required to unlock this exit.
+	     * Returns null if no key is required.
+	     */
+	    public String getRequiredKeyName() {
+	        return requiredKeyName;
+	    }
+	}
+	
+	/**
+	 * Attempts to unlock any locked exit in this room using the provided key.
+	 *
+	 * @param key the key item the player wants to use
+	 * @return true if the key successfully unlocked a door, false otherwise
+	 */
+	public boolean unlockDoorWithKey(Item key) {
+	    for (Exit exit : exits) {
+	        // Check if exit is locked and key matches
+	        if (exit.isLocked() && exit.getRequiredKeyName() != null
+	                && exit.getRequiredKeyName().equalsIgnoreCase(key.getName())) {
+	            exit.unlock(); 
+	            
+	            System.out.println("The " + exit.getDirection() + " door is now unlocked.");
+	            
+	            return true;  
+	        }
+	    }
+	    return false; 
+	}
 }
