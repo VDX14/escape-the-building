@@ -2,6 +2,7 @@ package game;
 
 import java.util.Scanner;
 
+import game.characters.Enemy;
 import game.characters.Player;
 import game.commands.Command;
 import game.commands.SimpleCommandParser;
@@ -111,12 +112,12 @@ public class Game {
 					
 					if (player.getInventory().isEmpty()) {
 						
-				        // Inventory has no items
+				        //Inventory has no items
 				        System.out.println("Your inventory is empty.");
 				        
 				    } else {
 				    	
-				        // Inventory contains items
+				        //Inventory contains items
 				        System.out.println("You have:");
 				        
 				        for (Item item : player.getInventory()) {
@@ -136,10 +137,10 @@ public class Game {
 				    try {
 				        Direction dir = parseDirection(noun);
 
-				        // Get player's current room
+				        //Get player's current room
 				        Room currentRoom = player.getCurrentRoom();
 
-				        // Find exit matching the direction
+				        //Find exit matching the direction
 				        Room.Exit chosenExit = null;
 
 				        for (Room.Exit exit : currentRoom.getExits()) {
@@ -149,27 +150,45 @@ public class Game {
 				            }
 				        }
 
-				        // No exit in that direction
+				        //No exit in that direction
 				        if (chosenExit == null) {
 				            System.out.println("You can't go that way.");
 				            continue;
 				        }
 
-				        // Checks lock door.
+				        //Check if door is locked
 				        if (chosenExit.isLocked()) {
 				            System.out.println("The door is locked.");
 				            continue;
 				        }
 
-				        // Move player to next room
+				        //Move player to next room
 				        player.move(chosenExit.getLeadsTo());
 
-				        // Show new room description
+				        //Enemy attacks if present in the new room
+				        Enemy enemy = player.getCurrentRoom().getEnemy();
+				        if (enemy != null && enemy.isAlive()) {
+				            System.out.println(enemy.getName() + " attacks you!");
+
+				            //Enemy deals damage to player
+				            enemy.attack(player);
+				            System.out.println("You took " + enemy.getDamage() + " damage. Current health: " + player.getHealth());
+
+				            //Check if player is dead
+				            if (!player.isAlive()) {
+				                System.out.println("You have died. Game over!");
+				                logger.log(player.getName() + " has died.");
+				                playing = false;
+				                continue; 
+				            }
+				        }
+
+				        //Show new room description
 				        System.out.println(player.getCurrentRoom().describe());
 
 				    } catch (IllegalArgumentException e) {
 				        System.out.println(e.getMessage());
-				   }
+				    }
 				
 				//Use command
 				 } else if (verb.equalsIgnoreCase("use")) {
