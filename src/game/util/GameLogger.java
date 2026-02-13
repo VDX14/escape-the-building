@@ -26,12 +26,20 @@ public class GameLogger {
 	}
 	
 	/**
-	 * Logs a message to the console. 
+	 * Logs a message to the console with time stamp.
 	 * 
 	 * @param message the message to log.
 	 */
 	public void log(String message) {
-		System.out.println("[LOG]" + message);
+	    System.out.println("[" + java.time.LocalTime.now() + "] [LOG] " + message);
+	}
+	
+	/**
+	 * Returns a friendly string for GameLogger instance.
+	 */
+	@Override
+	public String toString() {
+		return "GameLogger Singleton Instance";
 	}
 }
 
