@@ -1,7 +1,7 @@
 package game.characters;
 
 import game.items.Item;
-import game.items.Key;
+
 
 /**
  * Represents the Enemy character in the game. 
@@ -13,20 +13,20 @@ public class Enemy extends Character {
 	 */
 	//The amount of damage enemy can have. 
 	private int damage;
-	//The type of name of enemy.
-	private String enemyType;
 	
+	//Item that enemy will drop when defeated.
+	private Item dropItem;
+
 	/**
-	 * Constructor to set name, health and damage.
-	 * 
-	 * @param name
-	 * @param health
-	 * @param damage
-	 */
-	public Enemy(String name, int health, int damage) {
-		super(name, health);
-		this.damage = damage;
-	}
+     * Constructor that only sets the name, with default health and damage.
+     *
+     * @param name The enemy's name
+     */
+    public Enemy(String name) {
+        super(name, 100); 
+        this.damage = 10; 
+        this.dropItem = null;
+    }
 	
 	/**
 	 * Attacks player and reduce its health.
@@ -38,18 +38,31 @@ public class Enemy extends Character {
 	}
 	
 	/**
-	 * Returns the black key when enemy is defeated.
+     * Sets the item this enemy will drop when defeated.
+     *
+     * @param item The item to drop
+     */
+    public void setDropItem(Item item) {
+        this.dropItem = item;
+    }
+	
+	/**
+	 * Returns the golden key when ONLY enemy is defeated.
 	 * 
-	 * @return 
+	 * @return Golden key if dead, otherwise null.
 	 */
 	public Item dropItem() {
-		return new Key("Golden Key");
+		if (!isAlive()) {
+			return dropItem;
+		}
+		
+		return null;
 	}
 	
 	/**
 	 * Getter for enemy damage.
 	 * 
-	 * @return
+	 * @return damage value.
 	 */
 	public int getDamage() {
 		return damage;
