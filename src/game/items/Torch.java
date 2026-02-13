@@ -8,7 +8,7 @@ import game.characters.Player;
 public class Torch extends Item {
 	
 	//Give this item a name using the Item class. 
-	public Torch(String name) {
+	public Torch() {
 		super("Wooden Torch");
 	}
 	
@@ -22,11 +22,4 @@ public class Torch extends Item {
 		System.out.println("You use " + getName() + " to light up the area.");
 	}
 	
-	/**
-	 * Overridden for inventory display.
-	 */
-	 @Override
-	    public String toString() {
-	        return getName();
-	    }
 }
