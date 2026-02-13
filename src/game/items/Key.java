@@ -23,15 +23,11 @@ public class Key extends Item {
 	 */
 	@Override
 	public void use(Player player) {
-		assert player != null : "Player can't be null!";
-		System.out.println("You try to use " + getName() + " to unlock a door");
+	    assert player != null : "Player can't be null!";
+	    boolean success = player.useKey(getName());
+	    if (!success) {
+	        System.out.println(getName() + " doesn't seem to work here.");
+	    }
 	}
 	
-	/**
-	 * overridden for inventory display
-	 */
-	@Override 
-	public String toString() {
-		return getName();
-	}
 }
