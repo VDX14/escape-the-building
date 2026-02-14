@@ -1,6 +1,7 @@
 package game.items;
 
 import game.characters.Player;
+import game.world.Room;
 
 /**
  * Represents a torch item to be used to show light in dimmer/dark areas. 
@@ -19,7 +20,15 @@ public class Torch extends Item {
 	 */
 	public void use(Player player) {
 		assert player != null : "Player can't be null!";
-		System.out.println("You use " + getName() + " to light up the area.");
-	}
+		
+		// Get the current room
+        Room currentRoom = player.getCurrentRoom();
+
+        // Show a simple message
+        System.out.println("You use " + getName() + " to light up the area.");
+
+        // Reveal a hidden item (Potion) in the room
+        currentRoom.revealHiddenItem(new Potion());
+    }
 	
 }
