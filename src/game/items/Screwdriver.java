@@ -1,6 +1,7 @@
 package game.items;
 
 import game.characters.Player;
+import game.world.Room;
 
 /**
  * Represents a screwdriver item that can be used to open or loosen objects.
@@ -13,13 +14,22 @@ public class Screwdriver extends Item {
 	}
 	
 	/**
-	 * Uses the screwdriver 
+	 * Uses the screwdriver in current room and always reveal a hidden potion.
 	 * 
 	 * @param player the player using the screwdriver
 	 */
 	public void use(Player player) {
+		
 		assert player != null : "Player can't be null!";
-		System.out.println("You use " + getName() + " to open or loosen something.");
+		
+		//Get the current room
+        Room currentRoom = player.getCurrentRoom();
+
+        //Show a simple message
+        System.out.println("You use " + getName() + " to pry something open.");
+
+        //Reveal a hidden Potion in the room
+        currentRoom.revealHiddenItem(new Potion());
 	}
 
 }
