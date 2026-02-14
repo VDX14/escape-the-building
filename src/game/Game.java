@@ -1,7 +1,8 @@
 package game;
 
 import java.util.Scanner;
-
+import java.util.ResourceBundle;
+import java.text.MessageFormat;
 import game.characters.Enemy;
 import game.characters.Player;
 import game.commands.Command;
@@ -25,6 +26,9 @@ public class Game {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
+		//Used to load all game messages from message.properties.
+		ResourceBundle messages = ResourceBundle.getBundle("messages");
+		
 		//Immediate try-catch at the start. 
 		try {
 		
@@ -33,14 +37,14 @@ public class Game {
 			
 			//Prints welcome message to console. 
 			System.out.println("===================================");
-			System.out.println("        ESCAPE THE BUILDING        ");
+			System.out.println("        " + messages.getString("game.title") + "        ");
 			System.out.println("===================================");
-			System.out.println("You wake up in a strange building.");
-			System.out.println("You must explore and find items that will help you survive and escape.");
-			System.out.println("There is also an enemy roaming around. Be prepare to fight if approached.");
+			System.out.println(messages.getString("game.welcome"));
+			System.out.println(messages.getString("game.instructions"));
+			System.out.println(messages.getString("game.warning"));
 			System.out.println();
-			System.out.println("Type 'help' to see available commands.");
-			System.out.println("Good luck... you will need it!");
+			System.out.println(messages.getString("game.helpHint"));
+			System.out.println(messages.getString("game.goodluck"));
 			System.out.println("===================================");
 			
 			//Initialize Game World.
@@ -93,12 +97,12 @@ public class Game {
 				//Create default demands when "help" is typed. 
 				if (verb.equalsIgnoreCase("help")) {
 					
-					 System.out.println("Default commands:");
-					 System.out.println("look       - Examine the current room");
-					 System.out.println("inventory  - Show your items");
-					 System.out.println("go [dir]   - Move in a direction (north, south, east, west)");
-					 System.out.println("use [item] - Use an item from your inventory");
-					 System.out.println("quit       - Exit the game");	
+					System.out.println(messages.getString("help.header"));
+					System.out.println(messages.getString("help.look"));
+					System.out.println(messages.getString("help.inventory"));
+					System.out.println(messages.getString("help.go")); 
+					System.out.println(messages.getString("help.use"));
+					System.out.println(messages.getString("help.quit"));	
 				}
 				
 				//Look command, which shows info about the current room.
@@ -113,12 +117,12 @@ public class Game {
 					if (player.getInventory().isEmpty()) {
 						
 				        //Inventory has no items
-				        System.out.println("Your inventory is empty.");
+						System.out.println(messages.getString("inventory.empty"));
 				        
 				    } else {
 				    	
 				        //Inventory contains items
-				        System.out.println("You have:");
+				    	System.out.println(messages.getString("inventory.have"));
 				        
 				        for (Item item : player.getInventory()) {
 				            System.out.println("- " + item.getName());
@@ -130,7 +134,7 @@ public class Game {
 				else if (verb.equalsIgnoreCase("go")) {
 
 				    if (!command.hasNoun()) {
-				        System.out.println("You need to specify a direction (north, south, east, west).");
+				    	System.out.println(messages.getString("go.needDirection"));
 				        continue;
 				    }
 
@@ -152,13 +156,13 @@ public class Game {
 
 				        //No exit in that direction
 				        if (chosenExit == null) {
-				            System.out.println("You can't go that way.");
+				        	System.out.println(messages.getString("go.cant"));
 				            continue;
 				        }
 
 				        //Check if door is locked
 				        if (chosenExit.isLocked()) {
-				            System.out.println("The door is locked.");
+				        	System.out.println(messages.getString("go.locked"));
 				            continue;
 				        }
 
@@ -168,15 +172,26 @@ public class Game {
 				        //Enemy attacks if present in the new room
 				        Enemy enemy = player.getCurrentRoom().getEnemy();
 				        if (enemy != null && enemy.isAlive()) {
-				            System.out.println(enemy.getName() + " attacks you!");
+				        	System.out.println(
+				        		    MessageFormat.format(
+				        		        messages.getString("enemy.attack"),
+				        		        enemy.getName()
+				        		    )
+				        		);
 
 				            //Enemy deals damage to player
 				            enemy.attack(player);
-				            System.out.println("You took " + enemy.getDamage() + " damage. Current health: " + player.getHealth());
+				            System.out.println(
+				            	    MessageFormat.format(
+				            	        messages.getString("player.damage"),
+				            	        enemy.getDamage(),
+				            	        player.getHealth()
+				            	    )
+				            	);
 
 				            //Check if player is dead
 				            if (!player.isAlive()) {
-				                System.out.println("You have died. Game over!");
+				            	System.out.println(messages.getString("game.over"));
 				                logger.log(player.getName() + " has died.");
 				                playing = false;
 				                continue; 
@@ -194,7 +209,7 @@ public class Game {
 				 } else if (verb.equalsIgnoreCase("use")) {
 					 
 					 if (!command.hasNoun()) {
-					        System.out.println("You need to specify an item to use.");
+						 System.out.println(messages.getString("use.needItem"));
 					        continue; 
 					    }
 					 
@@ -214,25 +229,30 @@ public class Game {
                          player.getInventory().remove(foundItem);
                          
                      } else {
-                         System.out.println("You don't have a " + noun + " in your inventory.");
+                    	 System.out.println(
+                    			    MessageFormat.format(
+                    			        messages.getString("inventory.notFound"),
+                    			        noun
+                    			    )
+                    			);
                      }
                      
 				//Quit command, which ends the game loop.
 				} else if (verb.equalsIgnoreCase("quit")) {
 					
-					System.out.println("Thanks for playing!");
+					System.out.println(messages.getString("game.thanks"));
 					playing = false;
 				}
 				
 				//Default command for unrecognizable commands.
 				else {
 					
-					System.out.println("Unknown command. Type 'help' for a list of commands.");
+					System.out.println(messages.getString("unknown.command"));
 				}
 				
 				//Check if the player's health has dropped to 0 or below. 
 				if (!player.isAlive()) {
-					System.out.println("You have died. Game over!");
+					System.out.println(messages.getString("game.over"));
 					
 					//Log the death event 
 					logger.log(player.getName() + " has died.");
@@ -247,12 +267,12 @@ public class Game {
 			
 	} catch (Exception e) {
 			
-			System.out.println("An unexpected error occured.");
-			System.out.println("The game will close now!");
+		System.out.println(messages.getString("game.error"));
+		System.out.println(messages.getString("game.closing"));
 			e.printStackTrace();
 		}
 			
-		System.out.println("Game Closed.");
+		System.out.println(messages.getString("game.close"));
 	}
 	
 	/**
