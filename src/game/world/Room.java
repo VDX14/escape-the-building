@@ -243,4 +243,16 @@ public class Room {
 	    }
 	    return false; 
 	}
+	
+	/**
+	 * Reveals a hidden item in the room
+	 * 
+	 * @param item the item object to reveal in the room.
+	 */
+	public void revealHiddenItem(Item item) {
+	    if (!items.contains(item)) {
+	        items.add(item);
+	        System.out.println(item.getName() + " has been revealed in the room!");
+	    }
+	}
 }
