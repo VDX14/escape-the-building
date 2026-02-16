@@ -31,7 +31,7 @@ public class GameLogger {
 	 * @param message the message to log.
 	 */
 	public void log(String message) {
-	    System.out.println("[" + java.time.LocalTime.now() + "] [LOG] " + message);
+	    System.out.println("[" + java.time.LocalDateTime.now() + "] [LOG] " + message);
 	}
 	
 	/**
