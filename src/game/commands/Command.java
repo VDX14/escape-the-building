@@ -18,15 +18,25 @@ public final class Command {
 	
 	/**
 	 * Creates command with verb and noun.
+	 * Ensures no leading/trailing spaces.
 	 * 
 	 * @param verb the command action 
 	 * @param noun the command target
 	 */
 	public Command(String verb, String noun) {
-		this.verb = verb;
-		this.noun = noun;
+
+	    if (verb == null) {
+	        this.verb = "";
+	    } else {
+	        this.verb = verb.trim();
+	    }
+
+	    if (noun == null) {
+	        this.noun = "";
+	    } else {
+	        this.noun = noun.trim();
+	    }
 	}
-	
 	/**
 	 * Returns the command verb.
 	 * 
