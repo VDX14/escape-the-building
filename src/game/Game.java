@@ -1,5 +1,6 @@
 package game;
 
+import game.database.DatabaseManager;
 import java.util.Scanner;
 import java.util.ResourceBundle;
 import java.text.MessageFormat;
@@ -53,6 +54,13 @@ public class Game {
 			
 			//build all rooms.
 			world.buildWorld();
+			
+			// Initialize database
+			DatabaseManager.createTable();
+			if (!DatabaseManager.playerExists(1)) {
+				//Insert only if player doesn't exist. 
+			    DatabaseManager.insertPlayer(1, 15); 
+			}
 			
 			//Initialize player.
 			Player player = new Player();
@@ -124,9 +132,9 @@ public class Game {
 				        //Inventory contains items
 				    	System.out.println(messages.getString("inventory.have"));
 				        
-				        for (Item item : player.getInventory()) {
-				            System.out.println("- " + item.getName());
-				        }
+				    	 // Lambda/stream to print each item
+				        player.getInventory().forEach(item -> System.out.println("- " + item.getName()));
+				        
 				    }
 				}
 				
