@@ -14,6 +14,8 @@ import java.sql.Statement;
  */
 public class DatabaseManager {
 	
+	private static boolean tableExistsMessagePrinted = false;
+	
 	//Database URL and creates the database if non-existent. 
 		private static final String URL = "jdbc:derby:AdventureDB;create=true";
 
@@ -39,12 +41,24 @@ public class DatabaseManager {
 
 	        } catch (SQLException e) {
 	        	
-	            //If table already exists, Derby throws an exception.
-	        	//Print this message to console.
-	            System.out.println("Table already exists.");
+	        	 // Print "Table already exists" only the first time
+	        	// X0Y32 = table exists
+	            if ("X0Y32".equals(e.getSQLState())) { 
+	            	
+	                // Print this message only once
+	                if (!tableExistsMessagePrinted) {
+	                    System.out.println("Table already exists.");
+	                    tableExistsMessagePrinted = true;
+	                }
+	                
+	            } else {
+	            	
+	                // For other errors, print normally
+	                e.printStackTrace();
+	            }
 	        }
-	    }
-		
+		}
+	        
 		/**
 		 * This method adds a new player to player_stats table.
 		 * Saves player's ID and attack power into database.
