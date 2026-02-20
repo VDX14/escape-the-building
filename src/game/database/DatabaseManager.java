@@ -78,6 +78,39 @@ public class DatabaseManager {
 		}
 		
 		/**
+	     * Checks if a player with a given ID exists in the database.
+	     *
+	     * @param id the player's ID
+	     * @return true if player exists, false otherwise
+	     */
+	    public static boolean playerExists(int id) {
+	    	
+	    	//SQL statement to check if a player with this ID exist.
+	        String sql = "SELECT 1 FROM player_stats WHERE id = ?";
+	        
+	        try (Connection conn = DriverManager.getConnection(URL);
+	             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	        	//Set the player's ID in the SQL query.
+	            pstmt.setInt(1, id);
+	            
+	            //Execute query and get the result.
+	            ResultSet rs = pstmt.executeQuery();
+	            
+	            //If there is at least one row, player exist. 
+	            return rs.next();
+
+	        } catch (SQLException e) {
+	        	
+	        	//Print error details if something goes wrong. 
+	            e.printStackTrace();
+	        }
+	        
+	        //If an error happens, assume player doesn't exist. 
+	        return false; 
+	    }
+		
+		/**
 		 * This method gets the attack power of a player from the database. 
 		 * 
 		 * @param id the unique ID of the player. 
@@ -94,7 +127,7 @@ public class DatabaseManager {
 		        	//Put the ID value into the placeholder. 
 		            pstmt.setInt(1, id);
 		            
-		            //Execute the SQL query. 
+		          //Execute query and get the result.. 
 		            ResultSet rs = pstmt.executeQuery();
 
 		            //If player with that ID already exist. 
@@ -140,7 +173,7 @@ public class DatabaseManager {
 
 	        } catch (SQLException e) {
 	        	
-	        	//Print error message if something goes wrong. 
+	        	//Print error details if something goes wrong. 
 	            e.printStackTrace();
 	        }
 		}
