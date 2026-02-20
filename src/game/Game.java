@@ -3,6 +3,8 @@ package game;
 import game.database.DatabaseManager;
 import java.util.Scanner;
 import java.util.ResourceBundle;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import game.characters.Enemy;
 import game.characters.Player;
@@ -270,7 +272,17 @@ public class Game {
 			
 			//Log game session that it has ended.
 			logger.log("Game session ended.");
-			
+		
+			//Try to shut down the Derby database safely.
+			try {
+			    DriverManager.getConnection("jdbc:derby:AdventureDB;shutdown=true");
+			} catch (SQLException e) {
+			    //Normal shutdown of Derby throws SQLState XJ015.
+			    //Ignore that, but print other errors if they happen.
+			    if (!"XJ015".equals(e.getSQLState())) {
+			        e.printStackTrace();
+			    }
+			}
 		}
 			
 	} catch (Exception e) {
