@@ -1,6 +1,7 @@
 package game.characters;
 
 import java.util.ArrayList;
+import game.database.DatabaseManager;
 import java.util.List;
 import game.items.Item;
 import game.world.Room;
@@ -111,12 +112,24 @@ public class Player extends Character {
   }
 	
 	/**
+	 * Constructor for Player.
+	 * Loads attack power from database.
+	 */
+	public Player() {
+	    // Load saved attack power from database
+	    this.attackPower = DatabaseManager.getAttackPower(1);
+	}
+	
+	/**
 	 * Setter for attackPower.
 	 * 
 	 * @param power
 	 */
 	public void setAttackPower(int power) {
 		attackPower = power;
+		
+		// Save new value to database
+	    DatabaseManager.updateAttackPower(1, power);
 	}
 	
 	/**
