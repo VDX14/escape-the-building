@@ -6,7 +6,7 @@ import game.core.GameObject;
 /**
  * Represents all the usable items in the game.
  */
-public abstract class Item extends GameObject {
+public abstract class Item extends GameObject implements Comparable<Item> {
 	//Declare name variable for items.
 	private String name;
 	
@@ -40,4 +40,19 @@ public abstract class Item extends GameObject {
 	 * @param player the player using the item.
 	 */
 	public abstract void use(Player player);
+	
+	/**
+	 * Compares this item to another item.
+	 * 
+	 * This is used to sort items alphabetically by name. 
+	 * 
+	 * @param other the item to compare to.
+	 * 
+	 * @return a negative # if this comes before other, 0 if equal and 
+	 * a positive # if this comes after other. 
+	 */
+	@Override
+	public int compareTo(Item other) {
+		return this.name.compareTo(other.name);
+	}
 }
