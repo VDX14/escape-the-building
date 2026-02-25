@@ -3,6 +3,9 @@ package game.characters;
 import java.util.ArrayList;
 import game.database.DatabaseManager;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
 import game.items.Item;
 import game.world.Room;
 
@@ -14,8 +17,9 @@ public class Player extends Character {
 	/**
 	 * Declare variables.
 	 */
-	//List of items player is carrying.
-	private List<Item> inventory = new ArrayList<>();
+	//TreeSet automatically keeps items sorted.
+	//TreeSet prevents duplicate items automatically
+	private Set<Item> inventory = new TreeSet<>();
 	
 	//Room player is in. 
 	private Room currentRoom;
@@ -26,10 +30,10 @@ public class Player extends Character {
 	/**
 	 * Returns the player's inventory.
 	 * 
-	 * @return list of items the player is carrying.
+	 * @return a Set of Items the player currently has
 	 */
-	public List<Item> getInventory() {
-		return inventory;
+	public Set<Item> getInventory() {
+	    return inventory;
 	}
 	
 	/**
@@ -116,7 +120,7 @@ public class Player extends Character {
 	        }
 	        // Remove enemy from room
 	        currentRoom.setEnemy(null);
-	}
+	    }
 	
   }
 	
