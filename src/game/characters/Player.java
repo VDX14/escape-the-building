@@ -77,20 +77,29 @@ public class Player extends Character {
 	 * @return true if key was used successfully, false otherwise
 	 */
 	public boolean useKey(String keyName) {
+
+	    Item foundItem = null;
+
 	    for (Item item : inventory) {
 	        if (item.getName().equalsIgnoreCase(keyName)) {
-	            if (currentRoom.unlockDoorWithKey(item)) {
-	                System.out.println("You used " + keyName + " to unlock the door!");
-	                inventory.remove(item);
-	                return true;
-	            } else {
-	                System.out.println(keyName + " doesn't work here.");
-	                return false;
-	            }
+	            foundItem = item;
+	            break;
 	        }
 	    }
-	    System.out.println("You don't have " + keyName + " in your inventory.");
-	    return false;
+
+	    if (foundItem == null) {
+	        System.out.println("You don't have " + keyName + " in your inventory.");
+	        return false;
+	    }
+
+	    if (currentRoom.unlockDoorWithKey(foundItem)) {
+	        System.out.println("You used " + keyName + " to unlock the door!");
+	        inventory.remove(foundItem);
+	        return true;
+	    } else {
+	        System.out.println(keyName + " doesn't work here.");
+	        return false;
+	    }
 	}
 	
 	public void attack(Enemy enemy) {
