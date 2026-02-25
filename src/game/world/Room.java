@@ -1,7 +1,10 @@
 package game.world;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import game.items.Item;
 import game.characters.Enemy;
 
@@ -25,8 +28,9 @@ public class Room {
 	//If enemy is currently in room.
 	private Enemy enemy;
 	
-	//List of items available in the room.
-	private List<Item> items = new ArrayList<>();
+	//Set to store items in the player's inventory. 
+	//Use HashSet to ensure there are no duplicate items. 
+	private Set<Item> items = new HashSet<>();
 	
 	//Exits that leads to other rooms.
 	private List<Exit> exits = new ArrayList<>();
@@ -93,7 +97,7 @@ public class Room {
 	 * 
 	 * @return
 	 */
-	public List<Item> getItems() { 
+	public Set<Item> getItems() { 
 		return items;
 	}
 	
