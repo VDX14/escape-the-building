@@ -2,6 +2,9 @@ package game;
 
 import game.database.DatabaseManager;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -112,7 +115,9 @@ public class Game {
 					System.out.println(messages.getString("help.inventory"));
 					System.out.println(messages.getString("help.go")); 
 					System.out.println(messages.getString("help.use"));
-					System.out.println(messages.getString("help.quit"));	
+					System.out.println(messages.getString("help.pickup"));
+					System.out.println(messages.getString("help.quit"));
+					
 				}
 				
 				//Look command, which shows info about the current room.
@@ -123,20 +128,48 @@ public class Game {
 				
 				//Inventory command, which shows items from player's inventory
 				else if (verb.equalsIgnoreCase("inventory")) {
-					
-					if (player.getInventory().isEmpty()) {
-						
-				        //Inventory has no items
-						System.out.println(messages.getString("inventory.empty"));
-				        
+
+				    if (player.getInventory().isEmpty()) {
+
+				        System.out.println(messages.getString("inventory.empty"));
+
 				    } else {
-				    	
-				        //Inventory contains items
-				    	System.out.println(messages.getString("inventory.have"));
-				        
-				    	 // Lambda/stream to print each item
-				        player.getInventory().forEach(item -> System.out.println("- " + item.getName()));
-				        
+
+				        System.out.println(messages.getString("inventory.have"));
+
+				        List<Item> sortedItems = new ArrayList<>(player.getInventory());
+				        Collections.sort(sortedItems);
+
+				        for (Item item : sortedItems) {
+				            System.out.println("- " + item.getName());
+				        }
+				    }
+				}
+				
+				//Pick up command, allows player to pick up. 
+				else if (verb.equalsIgnoreCase("pick") || verb.equalsIgnoreCase("take")) {
+
+				    if (!command.hasNoun()) {
+				        System.out.println("Pick up what?");
+				    } else {
+
+				        Item foundItem = null;
+
+				        // Look for the item in the current room
+				        for (Item item : player.getCurrentRoom().getItems()) {
+				            if (item.getName().equalsIgnoreCase(noun)) {
+				                foundItem = item;
+				                break;
+				            }
+				        }
+
+				        if (foundItem != null) {
+				            player.pickUp(foundItem); // Use existing Player method
+				            player.getCurrentRoom().getItems().remove(foundItem);
+				            System.out.println("You picked up " + foundItem.getName());
+				        } else {
+				            System.out.println("There is no " + noun + " here.");
+				        }
 				    }
 				}
 				
