@@ -9,8 +9,10 @@ public abstract class Character extends GameObject{
 	
 	//Current amount of health character has right now.
 	private int health;
+	
 	//Maximum amount of health the character can have.
-	private int maxHealth;
+	private final int maxHealth;
+	
 	//Character name 
 	private String name;
 	
@@ -79,6 +81,7 @@ public abstract class Character extends GameObject{
 	public String getName() {
 		return name;
 	}
+	
 	/**
 	 * This reduces health by the given amount. 
 	 * 
