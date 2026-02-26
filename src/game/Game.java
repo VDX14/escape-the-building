@@ -2,9 +2,7 @@ package game;
 
 import game.database.DatabaseManager;
 import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 import java.util.ResourceBundle;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,6 +12,7 @@ import game.characters.Player;
 import game.commands.Command;
 import game.commands.SimpleCommandParser;
 import game.items.Item;
+import game.items.Key;
 import game.util.GameLogger;
 import game.world.Direction;
 import game.world.GameWorld;
@@ -116,6 +115,7 @@ public class Game {
 					System.out.println(messages.getString("help.go")); 
 					System.out.println(messages.getString("help.use"));
 					System.out.println(messages.getString("help.pickup"));
+					System.out.println(messages.getString("help.attack")); 
 					System.out.println(messages.getString("help.quit"));
 					
 				}
@@ -129,23 +129,18 @@ public class Game {
 				//Inventory command, which shows items from player's inventory
 				else if (verb.equalsIgnoreCase("inventory")) {
 
-				    if (player.getInventory().isEmpty()) {
+				    Set<Item> inventory = player.getInventory(); 
 
+				    if (inventory.isEmpty()) {
 				        System.out.println(messages.getString("inventory.empty"));
-
 				    } else {
-
 				        System.out.println(messages.getString("inventory.have"));
 
-				        List<Item> sortedItems = new ArrayList<>(player.getInventory());
-				        Collections.sort(sortedItems);
-
-				        for (Item item : sortedItems) {
-				            System.out.println("- " + item.getName());
-				        }
+				        
+				        inventory.forEach(item -> System.out.println("- " + item.getName()));
 				    }
 				}
-				
+			
 				//Pick up command, allows player to pick up. 
 				else if (verb.equalsIgnoreCase("pick") || verb.equalsIgnoreCase("take")) {
 
@@ -153,31 +148,42 @@ public class Game {
 				        System.out.println("Pick up what?");
 				    } else {
 
-				        Item foundItem = null;
-
-				        // Look for the item in the current room
-				        for (Item item : player.getCurrentRoom().getItems()) {
-				            if (item.getName().equalsIgnoreCase(noun)) {
-				                foundItem = item;
-				                break;
-				            }
+				        
+				        String rawItemName = noun;
+				        final String itemName; 
+				        if (verb.equalsIgnoreCase("pick") && rawItemName.toLowerCase().startsWith("up ")) {
+				            itemName = rawItemName.substring(3).trim(); 
+				        } else {
+				            itemName = rawItemName.trim();
 				        }
 
+				        //Search for the item in the current room
+				        Item foundItem = player.getCurrentRoom().getItems().stream()
+				                               .filter(i -> i.getName().equalsIgnoreCase(itemName))
+				                               .findFirst()
+				                               .orElse(null);
+
 				        if (foundItem != null) {
-				            player.pickUp(foundItem); // Use existing Player method
+				            //Add to player inventory (TreeSet will sort automatically)
+				            player.pickUp(foundItem);
+
+				            //Remove item from room (TreeSet still sorted)
 				            player.getCurrentRoom().getItems().remove(foundItem);
+
 				            System.out.println("You picked up " + foundItem.getName());
+
 				        } else {
-				            System.out.println("There is no " + noun + " here.");
+				            System.out.println("There is no " + itemName + " here.");
 				        }
 				    }
 				}
+				    
 				
 				//Go command, which moves player.
 				else if (verb.equalsIgnoreCase("go")) {
 
 				    if (!command.hasNoun()) {
-				    	System.out.println(messages.getString("go.needDirection"));
+				        System.out.println(messages.getString("go.needDirection"));
 				        continue;
 				    }
 
@@ -199,87 +205,137 @@ public class Game {
 
 				        //No exit in that direction
 				        if (chosenExit == null) {
-				        	System.out.println(messages.getString("go.cant"));
+				            System.out.println(messages.getString("go.cant"));
 				            continue;
 				        }
 
 				        //Check if door is locked
 				        if (chosenExit.isLocked()) {
-				        	System.out.println(messages.getString("go.locked"));
+				            System.out.println(messages.getString("go.locked"));
 				            continue;
 				        }
 
 				        //Move player to next room
 				        player.move(chosenExit.getLeadsTo());
 
-				        //Enemy attacks if present in the new room
+				        //Show room description (includes enemy, exits, and items)
+				        System.out.println(player.getCurrentRoom().describe());
+
+				        //Enemy attacks if present
 				        Enemy enemy = player.getCurrentRoom().getEnemy();
 				        if (enemy != null && enemy.isAlive()) {
-				        	System.out.println(
-				        		    MessageFormat.format(
-				        		        messages.getString("enemy.attack"),
-				        		        enemy.getName()
-				        		    )
-				        		);
+				            System.out.println(
+				                MessageFormat.format(
+				                    messages.getString("enemy.attack"),
+				                    enemy.getName()
+				                )
+				            );
 
-				            //Enemy deals damage to player
 				            enemy.attack(player);
 				            System.out.println(
-				            	    MessageFormat.format(
-				            	        messages.getString("player.damage"),
-				            	        enemy.getDamage(),
-				            	        player.getHealth()
-				            	    )
-				            	);
+				                MessageFormat.format(
+				                    messages.getString("player.damage"),
+				                    enemy.getDamage(),
+				                    player.getHealth()
+				                )
+				            );
 
-				            //Check if player is dead
 				            if (!player.isAlive()) {
-				            	System.out.println(messages.getString("game.over"));
+				                System.out.println(messages.getString("game.over"));
 				                logger.log(player.getName() + " has died.");
 				                playing = false;
-				                continue; 
 				            }
 				        }
-
-				        //Show new room description
-				        System.out.println(player.getCurrentRoom().describe());
 
 				    } catch (IllegalArgumentException e) {
 				        System.out.println(e.getMessage());
 				    }
+				}
 				
 				//Use command
-				 } else if (verb.equalsIgnoreCase("use")) {
-					 
-					 if (!command.hasNoun()) {
-						 System.out.println(messages.getString("use.needItem"));
-					        continue; 
-					    }
-					 
-                     // Check if player has the item
-                     Item foundItem = null;
-                     for (Item item : player.getInventory()) {
-                         if (item.getName().equalsIgnoreCase(noun)) {
-                             foundItem = item;
-                             break;
-                         }
-                     }
+				else if (verb.equalsIgnoreCase("use")) {
 
-                     if (foundItem != null) {
-                    	 
-                         assert player != null : "Player can't be null!";
-                         foundItem.use(player);
-                         player.getInventory().remove(foundItem);
-                         
-                     } else {
-                    	 System.out.println(
-                    			    MessageFormat.format(
-                    			        messages.getString("inventory.notFound"),
-                    			        noun
-                    			    )
-                    			);
-                     }
+				     if (!command.hasNoun()) {
+				         System.out.println(messages.getString("use.needItem"));
+				         continue; 
+				     }
+
+				     String itemName = noun;
+
+				     Item foundItem = player.getInventory().stream()
+				    		 .filter(i -> i.getName().equalsIgnoreCase(itemName))
+				             .findFirst()
+				             .orElse(null);
+
+				     if (foundItem != null) {
+
+				        if (foundItem instanceof Key) {
+
+				            boolean unlocked = player.getCurrentRoom().unlockDoorWithKey(foundItem);
+
+				            if (!unlocked) {
+				                System.out.println(foundItem.getName() + " doesn't work here.");
+				            } else {
+				                    
+				            	//Check if this is the Golden Key and final exit
+				                if (foundItem.getName().equalsIgnoreCase("Golden Key")) {
+
+				                    boolean escaped = player.getCurrentRoom().getExits().stream()
+				                            .anyMatch(exit -> exit.getRequiredKeyName() != null
+				                                      && exit.getRequiredKeyName().equalsIgnoreCase("Golden Key")
+				                                      && !exit.isLocked());
+
+				                    if (escaped) {
+				                       System.out.println("Congratulations! You used the Golden Key and escaped the building!");
+				                       playing = false;  
+				                    }
+				                }
+				            }
+				            
+				         } else {
+				             //Normal items
+				             foundItem.use(player);
+				             player.getInventory().remove(foundItem);
+				         }
+
+				      } else {
+				          System.out.println(itemName + " is not in your inventory.");
+				      }
+				}
                      
+                //Attack command, which attacks the enemy. 
+				else if (verb.equalsIgnoreCase("attack")) {
+
+					Enemy enemy = player.getCurrentRoom().getEnemy();
+
+					if (enemy == null || !enemy.isAlive()) {
+						System.out.println("There is nothing to attack here.");
+						continue;
+					}
+
+					//Show room description (includes enemy, exits, and items)
+					System.out.println(player.getCurrentRoom().describe());
+
+					//Player attacks enemy
+					player.attack(enemy); // prints damage already
+
+					//Enemy counter-attack if still alive
+					if (enemy.isAlive()) {
+						enemy.attack(player);
+						System.out.println("Ouch! " + enemy.getName() + " attacks you! You took " + enemy.getDamage()
+								+ " damage. Current health: " + player.getHealth() + ".");
+					} else {
+						System.out.println(enemy.getName() + " has died!");
+
+						//Drop item if any
+						Item drop = enemy.dropItem();
+						if (drop != null) {
+							System.out.println("The enemy dropped a " + drop.getName() + "!");
+							player.getCurrentRoom().addItem(drop);
+							System.out.println(drop.getName() + " has been revealed in the room!");
+						}
+					}
+				    	    
 				//Quit command, which ends the game loop.
 				} else if (verb.equalsIgnoreCase("quit")) {
 					
@@ -310,10 +366,13 @@ public class Game {
 			try {
 			    DriverManager.getConnection("jdbc:derby:AdventureDB;shutdown=true");
 			} catch (SQLException e) {
-			    //Normal shutdown of Derby throws SQLState XJ015.
-			    //Ignore that, but print other errors if they happen.
-			    if (!"XJ015".equals(e.getSQLState())) {
-			        e.printStackTrace();
+			    String state = e.getSQLState();
+
+			    //Derby throws an exception on successful shutdown.
+			    if (!"XJ015".equals(state) && !"08006".equals(state)) {
+			        e.printStackTrace(); // real error
+			    } else {
+			        System.out.println("Database shut down normally.");
 			    }
 			}
 		}
