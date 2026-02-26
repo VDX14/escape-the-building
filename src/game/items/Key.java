@@ -23,11 +23,6 @@ public class Key extends Item {
 	 */
 	@Override
 	public void use(Player player) {
-	    assert player != null : "Player can't be null!";
-	    boolean success = player.useKey(getName());
-	    if (!success) {
-	        System.out.println(getName() + " doesn't seem to work here.");
-	    }
+		
 	}
-	
 }
