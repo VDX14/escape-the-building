@@ -1,9 +1,10 @@
 package game.world;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import game.items.Item;
 import game.characters.Enemy;
@@ -11,7 +12,9 @@ import game.characters.Enemy;
 /**
  * Represents a room in the game world.
  */
-public class Room {
+public class Room implements Serializable {
+
+private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Declare variables 
@@ -29,11 +32,11 @@ public class Room {
 	private Enemy enemy;
 	
 	//Set to store items in the player's inventory. 
-	//Use HashSet to ensure there are no duplicate items. 
-	private Set<Item> items = new HashSet<>();
+	//Using TreeSet so items are always sorted alphabetically and prevent duplicates.
+	private Set<Item> items = new TreeSet<>();
 	
 	//Exits that leads to other rooms.
-	private List<Exit> exits = new ArrayList<>();
+	private List<Room.Exit> exits = new ArrayList<>();
 	
 	/**
 	 * Constructor to set room names and description. 
@@ -47,7 +50,7 @@ public class Room {
 	/**
      * Adds an exit to the room
      */
-    public void addExit(Exit exit) {
+    public void addExit(Room.Exit exit) {
         exits.add(exit);
     }
 
@@ -79,7 +82,7 @@ public class Room {
 	 * 
 	 * @return
 	 */
-	public List<Exit> getExits() { 
+	public List<Room.Exit> getExits() { 
 		return exits;
 	}
 	
@@ -118,32 +121,37 @@ public class Room {
 	public String describe() {
 		String description;
 
-	    // If the room has been visited before, show a shorter message
+	    //If the room has been visited before, show a shorter message
 	    if (visited) {
 	        description = "You are back in " + roomName + ".";
 	    } else {
-	        // First time visit, show full description
+	        //First time visit, show full description
 	        description = roomDescription;
-	        visited = true; // mark as visited
+	        visited = true; 
 	    }
 
-	    // List exits
+	    //List exits
 	    description += "\nExits: ";
-	    for (Exit exit : exits) {
+	    for (Room.Exit exit : exits) {
 	        description += exit.direction + " ";
 	    }
 
-	    // List items if any
+	    //List items if any
 	    if (!items.isEmpty()) {
 	        description += "\nItems in room: ";
+	        
+	        int count = 0;
 	        for (Item item : items) {
-	            description += item.getName() + " ";
+	            description += item.getName();
+	            count++;
+	            if (count < items.size()) {
+	                description += ", "; 
 	        }
 	    }
+	 }
 
-	    // Show enemy if there is one
+	    //Show enemy if there is one
 	    if (hasEnemy()) {
-	        description += "\nThere is an enemy here: " + enemy.getName();
 	    }
 
 	    return description;
@@ -153,7 +161,9 @@ public class Room {
 	 * Represents an exit path from this room to another room.
 	 * Each exit has a direction and could be locked.
 	 */
-	public class Exit {
+	public static class Exit implements Serializable {
+		
+	    private static final long serialVersionUID = 1L;
 		
 		/**
 		 * Declare variables.
@@ -234,7 +244,7 @@ public class Room {
 	 * @return true if the key successfully unlocked a door, false otherwise
 	 */
 	public boolean unlockDoorWithKey(Item key) {
-	    for (Exit exit : exits) {
+	    for (Room.Exit exit : exits) {
 	        // Check if exit is locked and key matches
 	        if (exit.isLocked() && exit.getRequiredKeyName() != null
 	                && exit.getRequiredKeyName().equalsIgnoreCase(key.getName())) {
