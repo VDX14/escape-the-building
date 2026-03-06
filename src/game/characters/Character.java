@@ -50,9 +50,9 @@ public abstract class Character extends GameObject implements Serializable {
 	}
 	
 	/**
-	 * Returns current health of character
+	 * Returns current health of character.
 	 * 
-	 * @return the current health
+	 * @return the current health.
 	 */
 	public int getHealth( ) {
 		return health;
