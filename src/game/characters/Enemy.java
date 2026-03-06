@@ -1,12 +1,15 @@
 package game.characters;
 
+import java.io.Serializable;
 import game.items.Item;
 
 
 /**
  * Represents the Enemy character in the game. 
  */
-public class Enemy extends Character {
+public class Enemy extends Character implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
 	/**
 	 * Declare variables.
