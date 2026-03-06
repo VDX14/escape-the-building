@@ -1,11 +1,14 @@
 package game.characters;
 
+import java.io.Serializable;
 import game.core.GameObject;
 
 /**
  * Represents base class for player and enemy.
  */
-public abstract class Character extends GameObject{
+public abstract class Character extends GameObject implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	//Current amount of health character has right now.
 	private int health;
