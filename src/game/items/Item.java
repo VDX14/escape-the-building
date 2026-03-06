@@ -1,12 +1,16 @@
 package game.items;
 
+import java.io.Serializable;
 import game.characters.Player;
 import game.core.GameObject;
 
 /**
  * Represents all the usable items in the game.
  */
-public abstract class Item extends GameObject implements Comparable<Item> {
+public abstract class Item extends GameObject implements Comparable<Item>, Serializable {
+
+    private static final long serialVersionUID = 1L;
+    
 	//Declare name variable for items.
 	private String name;
 	
